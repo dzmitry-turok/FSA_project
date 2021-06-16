@@ -1,0 +1,26 @@
+---
+version: "2"
+
+services:
+  app:
+    build: ""
+    command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8090 --reload"
+    container_name: FSA
+    depends_on:
+      - "db"
+    restart: on-failure:10
+    volumes:
+      - .:/app
+    environment:
+      DB_USER: postgres
+      DB_HOST: db
+      DB_PASSWORD: postgres
+    ports:
+      - "8090:8090"
+    restart: always
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=app_db
